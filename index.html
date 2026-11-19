@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0e1220">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="ZnisBack">
+<meta name="app-version" content="1.5.3">
+<title>ZnisBack - Gerador de Sensi FF</title>
+<style>
+:root{--bg:#0e1220;--card:#171c2f;--line:#262d47;--txt:#f3f4fa;--mut:#8f97b8;--a:#ff7a1a;--b:#ffc233}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font:500 15px/1.45 system-ui,-apple-system,Roboto,"Segoe UI",sans-serif;overflow:hidden;overscroll-behavior:none}
+#app{display:flex;flex-direction:column;height:100%;padding-top:env(safe-area-inset-top,0px)}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 8px}
+.brand-lockup{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.logo{font-weight:900;font-style:italic;letter-spacing:.16em;font-size:19px;line-height:1.15}
+.logo b{color:var(--a)}
+.app-version{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--mut);line-height:1.2}
+.badge{border:0;font-family:inherit;font-size:12px;font-weight:800;color:#1c1100;background:var(--b);padding:4px 12px;border-radius:20px}
+main{flex:1;position:relative;overflow:hidden}
+.screen{position:absolute;inset:0;overflow-y:auto;padding:6px 18px 26px;opacity:0;visibility:hidden;transform:translateY(8px);transition:.25s}
+.screen.on{opacity:1;visibility:visible;transform:none}
+h2{font-size:24px;font-weight:900;font-style:italic}
+.mut{color:var(--mut);font-size:13px}
+.ctr{text-align:center;margin-top:48px;line-height:1.7}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 18px}
+.c{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 14px}
+.c.w{grid-column:span 2}
+.c small{display:block;color:var(--mut);font-size:12px}
+.c b{font-size:16px;word-break:break-word}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:16px;font:900 17px system-ui,sans-serif;font-style:italic;color:#1c1100;background:linear-gradient(100deg,var(--a),var(--b));box-shadow:0 8px 24px #ff7a1a40;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.55}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--txt);box-shadow:none;margin-top:10px}
+.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 14px}
+.game-btn{min-width:0;border:1px solid #60401e;border-radius:13px;padding:11px 8px;background:linear-gradient(145deg,#24190f,#171c2f);color:var(--txt);text-align:left;font:800 13px system-ui,sans-serif;transition:transform .15s,border-color .15s}
+.game-btn:active{transform:scale(.97)}
+.game-btn b,.game-btn small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game-btn b{color:var(--b);font-size:12px}
+.game-btn small{color:var(--mut);font-size:11px;margin-top:3px;font-weight:600}
+.p{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:14px}
+.p i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b));transition:width .4s}
+#st{color:var(--mut);font-size:13px;margin-top:8px;min-height:20px;text-align:center}
+.pw{background:linear-gradient(135deg,#2a1b10,var(--card));border:1px solid #4a3318;border-radius:16px;padding:16px;margin:14px 0 6px}
+.pv{display:flex;align-items:baseline;gap:4px}
+.pv b{font-size:42px;font-style:italic;font-weight:900;color:var(--b);line-height:1.1}
+.pw .t{margin-top:8px;height:10px}
+h3{font-size:16px;font-weight:900;font-style:italic;margin:22px 0 0}.hzr{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}.hzr button{background:none;border:1px solid var(--line);color:var(--txt);border-radius:20px;padding:8px 14px;font:800 13px system-ui,sans-serif}.hzr button.on{background:var(--b);border-color:var(--b);color:#1c1100}.r{display:grid;grid-template-columns:116px 1fr 46px;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.r span{font-size:14px;font-weight:700}
+.r b{font-size:21px;text-align:right;font-style:italic;font-weight:900;color:var(--b)}
+.t{height:8px;background:var(--line);border-radius:8px;overflow:hidden}
+.t i{display:block;height:100%;width:var(--w);border-radius:8px;background:linear-gradient(90deg,var(--a),var(--b));animation:g .9s cubic-bezier(.2,.8,.2,1)}
+@keyframes g{from{width:0}}
+.tip{color:var(--mut);font-size:13px;margin:16px 0}
+.qr{display:block;width:min(240px,70vw);margin:20px auto 16px;border-radius:14px}
+nav{display:flex;background:#0a0e1a;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;background:none;border:0;color:var(--mut);padding:10px 0 8px;font:700 12px system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:4px}
+nav button.on{color:var(--b)}
+nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+#splash{position:fixed;inset:0;z-index:9;background:radial-gradient(circle at 50% 42%,#3a1c08,var(--bg) 66%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s,visibility .5s}
+#splash.off{opacity:0;visibility:hidden}
+#splash svg{width:104px;height:104px;fill:none;stroke:var(--a);stroke-width:1.6;stroke-linecap:round;animation:sp 4s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#splash h1{font:900 36px system-ui,sans-serif;font-style:italic;letter-spacing:.18em;background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+#splash p{color:var(--mut);font-size:13px}
+
+/* Fluxo de entrada: escolha de perfil e validação do proprietário */
+.gate{position:fixed;inset:0;z-index:15;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 50% 18%,#3a1c08,#0e1220 68%);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s,visibility .35s}
+.gate.show{opacity:1;visibility:visible;pointer-events:auto}
+.gate-panel{position:absolute;width:min(100%,390px);max-height:calc(100% - 48px);overflow-y:auto;padding:30px 24px;border:1px solid #49331f;border-radius:24px;background:linear-gradient(145deg,rgba(35,28,39,.97),rgba(20,25,43,.98));box-shadow:0 24px 70px #0009;text-align:center;opacity:0;visibility:hidden;transform:translateY(18px) scale(.97);transition:opacity .28s,transform .28s,visibility .28s}
+.gate-panel.active{opacity:1;visibility:visible;transform:none}
+.gate-brand{font-size:13px;font-weight:1000;letter-spacing:.24em;color:var(--b);margin-bottom:20px}
+.gate-panel h2{font-size:27px;margin-bottom:8px}
+.gate-panel p{color:var(--mut);font-size:14px;margin:0 0 18px}
+.gate-panel .btn{margin-top:10px}
+.gate-panel .btn.ghost{margin-top:10px}
+.gate-input{display:block;width:100%;margin:14px 0 8px;padding:15px 16px;border:1px solid var(--line);border-radius:13px;background:#0e1220;color:var(--txt);font:600 16px system-ui,sans-serif;outline:none;-webkit-user-select:text;user-select:text}
+.gate-input:focus{border-color:var(--b);box-shadow:0 0 0 3px #ffc23322}
+.gate-options{display:grid;gap:9px;margin-top:14px}
+.gate-option{width:100%;padding:14px;border:1px solid var(--line);border-radius:13px;background:#ffffff0d;color:var(--txt);text-align:left;font:800 15px system-ui,sans-serif}
+.gate-option:active{transform:scale(.98);background:#ffc23322}
+.gate-error{min-height:22px;margin-top:10px;color:#ffaaa0;font-size:13px;font-weight:700}
+.gate-back{margin-top:16px;border:0;background:none;color:var(--mut);font:700 13px system-ui,sans-serif;text-decoration:underline;padding:8px}
+.gate-panel.shake{animation:gateShake .38s ease}
+@keyframes gateShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+@media(prefers-reduced-motion:reduce){.gate,.gate-panel{transition:none}.gate-panel.shake{animation:none}}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--b);color:#1c1100;font-weight:800;padding:10px 18px;border-radius:30px;opacity:0;transition:.3s;pointer-events:none}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.spin{position:fixed;z-index:20;left:50%;top:calc(env(safe-area-inset-top,0px) + 16px);width:18px;height:18px;margin-left:-9px;border:2.5px solid var(--b);border-top-color:transparent;border-radius:50%;pointer-events:none}
+@media (prefers-reduced-motion:reduce){#splash svg,.t i{animation:none}}
+</style>
+</head>
+<body>
+<div id="splash"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 1v6M12 17v6M1 12h6M17 12h6"/></svg><h1>ZNISBACK</h1><p>Gerador de sensi para Free Fire</p></div>
+
+<div class="gate" id="accessGate" role="dialog" aria-modal="true" aria-label="Escolha de acesso" aria-hidden="true">
+  <section class="gate-panel active" id="gate-role">
+    <div class="gate-brand">ZNISBACK</div>
+    <h2>Quem é você?</h2>
+    <p>Escolha uma opção para continuar.</p>
+    <button class="btn" type="button" onclick="chooseRole('user')">👤 Usuário comum</button>
+    <button class="btn ghost" type="button" onclick="chooseRole('owner')">👑 ZnisBack</button>
+  </section>
+
+  <section class="gate-panel" id="gate-user">
+    <div class="gate-brand">ZNISBACK</div>
+    <h2>Usuário comum</h2>
+    <p>Digite seu nome para entrar no aplicativo.</p>
+    <input class="gate-input" id="gateUserName" type="text" maxlength="40" placeholder="Seu nome" autocomplete="name">
+    <button class="btn" type="button" onclick="enterAsUser()">Entrar</button>
+    <div class="gate-error" id="gateUserError" aria-live="polite"></div>
+    <button class="gate-back" type="button" onclick="gateTo('gate-role')">← Voltar</button>
+  </section>
+
+  <section class="gate-panel" id="gate-owner-q1">
+    <div class="gate-brand">ÁREA RESTRITA</div>
+    <h2>Pergunta 1 🔒</h2>
+    <p>Quem foi a pessoa que você mais amou?</p>
+    <input class="gate-input" id="gateAnswer1" type="text" maxlength="70" placeholder="Escreva sua resposta" autocomplete="off" autocapitalize="none" spellcheck="false">
+    <button class="btn" type="button" onclick="verifyOwnerQ1()">Confirmar</button>
+    <div class="gate-error" id="gateError1" aria-live="polite"></div>
+    <button class="gate-back" type="button" onclick="gateTo('gate-role')">← Voltar</button>
+  </section>
+
+  <section class="gate-panel" id="gate-owner-q2">
+    <div class="gate-brand">ÁREA RESTRITA</div>
+    <h2>Pergunta 2 💭</h2>
+    <p>Quem você mais gosta atualmente?</p>
+    <div class="gate-options">
+      <button class="gate-option" type="button" onclick="verifyOwnerQ2('sofhia')">1. Sofhia</button>
+      <button class="gate-option" type="button" onclick="verifyOwnerQ2('bela')">2. Bela</button>
+      <button class="gate-option" type="button" onclick="verifyOwnerQ2('znisback')">3. ZnisBack</button>
+      <button class="gate-option" type="button" onclick="verifyOwnerQ2('mae')">4. Mãe (Ester)</button>
+    </div>
+    <div class="gate-error" id="gateError2" aria-live="polite"></div>
+    <button class="gate-back" type="button" onclick="gateTo('gate-role')">← Voltar</button>
+  </section>
+</div>
+<div id="app">
+<header><div class="brand-lockup"><div class="logo">ZNIS<b>BACK</b></div><span class="app-version" id="appVersion">Versão 1.5.3</span></div><button class="badge" id="tier" hidden onclick="go('dev')" title="Ajuda o dev"></button></header>
+<main>
+<section class="screen on" id="s-home">
+<h2>Seu aparelho</h2>
+<p class="mut">Leitura do aparelho e um perfil inicial de mira com mais controle no zoom.</p>
+<div class="game-grid" aria-label="Atalhos dos jogos">
+<button class="game-btn" type="button" onclick="openGame('com.dts.freefireth','Free Fire')"><b>FREE FIRE</b><small>Abrir jogo / instalar</small></button>
+<button class="game-btn" type="button" onclick="openGame('com.dts.freefiremax','Free Fire MAX')"><b>FREE FIRE MAX</b><small>Abrir jogo / instalar</small></button>
+</div>
+<div class="g" id="grid"></div>
+<p class="mut">A taxa da tela veio errada? Toque na correta:</p><div class="hzr" id="hzr"></div>
+<button class="btn" id="go">Escanear e gerar sensi</button>
+<div class="p"><i id="bar"></i></div>
+<div id="st"></div>
+</section>
+<section class="screen" id="s-sensi">
+<div id="empty" class="mut ctr">Nenhuma sensi gerada ainda.<br>Toque em Escanear na aba Aparelho.</div>
+<div id="res"></div>
+</section>
+<section class="screen" id="s-dev">
+<h2>Ajuda o dev</h2>
+<p class="mut">Gostou da sensi? Qualquer valor em Pix ajuda o ZnisBack a continuar. Escaneie o QR Code no app do seu banco ou copie a chave abaixo.</p>
+<svg class="qr" viewBox="-4 -4 45 45" role="img" aria-label="QR Code Pix" shape-rendering="crispEdges"><rect x="-4" y="-4" width="45" height="45" fill="#fff"/><path transform="translate(0 .5)" stroke="#000" d="M0 0h7M12 0h1M14 0h2M18 0h1M22 0h6M30 0h7M0 1h1M6 1h1M10 1h3M14 1h1M19 1h1M22 1h1M24 1h2M28 1h1M30 1h1M36 1h1M0 2h1M2 2h3M6 2h1M9 2h1M11 2h3M16 2h1M18 2h1M22 2h2M25 2h2M30 2h1M32 2h3M36 2h1M0 3h1M2 3h3M6 3h1M9 3h2M12 3h8M21 3h1M23 3h1M25 3h1M28 3h1M30 3h1M32 3h3M36 3h1M0 4h1M2 4h3M6 4h1M10 4h1M17 4h1M19 4h2M24 4h2M27 4h1M30 4h1M32 4h3M36 4h1M0 5h1M6 5h1M8 5h2M13 5h1M16 5h4M26 5h1M30 5h1M36 5h1M0 6h7M8 6h1M10 6h1M12 6h1M14 6h1M16 6h1M18 6h1M20 6h1M22 6h1M24 6h1M26 6h1M28 6h1M30 6h7M10 7h2M13 7h4M18 7h2M21 7h3M25 7h1M28 7h1M0 8h1M3 8h1M5 8h2M8 8h3M12 8h3M16 8h3M20 8h2M23 8h2M29 8h1M31 8h1M0 9h1M2 9h1M4 9h2M7 9h1M11 9h9M22 9h2M25 9h1M27 9h1M30 9h2M33 9h3M2 10h1M6 10h5M12 10h2M15 10h1M18 10h3M22 10h2M25 10h1M27 10h2M30 10h4M36 10h1M0 11h1M2 11h3M7 11h2M10 11h1M14 11h1M16 11h1M18 11h4M23 11h1M25 11h2M29 11h1M32 11h1M34 11h1M2 12h2M5 12h2M8 12h4M14 12h3M18 12h1M21 12h1M23 12h1M28 12h1M32 12h3M36 12h1M1 13h5M8 13h4M14 13h3M18 13h4M26 13h4M31 13h2M34 13h1M1 14h2M5 14h2M9 14h3M13 14h2M16 14h2M21 14h1M24 14h1M27 14h5M34 14h2M1 15h1M5 15h1M11 15h1M13 15h1M15 15h1M19 15h3M23 15h3M29 15h2M33 15h1M0 16h4M5 16h7M16 16h1M18 16h1M20 16h2M25 16h2M28 16h1M31 16h2M36 16h1M1 17h2M4 17h2M7 17h1M10 17h2M13 17h3M20 17h1M22 17h1M24 17h3M28 17h1M30 17h1M33 17h1M0 18h3M4 18h1M6 18h1M10 18h5M18 18h1M20 18h1M22 18h2M25 18h1M30 18h1M32 18h1M36 18h1M4 19h1M12 19h6M19 19h1M21 19h3M25 19h2M29 19h1M31 19h5M1 20h1M3 20h5M9 20h1M11 20h3M16 20h1M18 20h1M21 20h1M25 20h4M30 20h1M35 20h2M0 21h1M7 21h1M9 21h2M14 21h2M17 21h2M20 21h1M25 21h1M28 21h2M31 21h1M33 21h1M35 21h1M2 22h1M6 22h4M12 22h1M18 22h3M23 22h1M25 22h2M29 22h3M36 22h1M1 23h1M3 23h2M9 23h3M13 23h1M15 23h1M21 23h1M24 23h2M27 23h1M30 23h3M1 24h3M5 24h3M11 24h2M16 24h1M18 24h1M20 24h1M23 24h1M26 24h1M28 24h1M30 24h1M34 24h1M36 24h1M1 25h2M4 25h1M8 25h5M15 25h1M19 25h1M22 25h1M24 25h4M29 25h2M34 25h2M0 26h1M5 26h3M12 26h7M22 26h1M26 26h3M30 26h3M35 26h2M1 27h1M3 27h1M5 27h1M8 27h1M10 27h5M16 27h1M26 27h1M28 27h4M0 28h3M6 28h1M9 28h2M15 28h1M19 28h4M26 28h8M8 29h1M10 29h1M12 29h2M15 29h1M17 29h1M19 29h1M21 29h1M23 29h1M26 29h3M32 29h2M35 29h1M0 30h7M9 30h2M14 30h1M16 30h2M19 30h1M23 30h1M26 30h1M28 30h1M30 30h1M32 30h1M34 30h1M0 31h1M6 31h1M8 31h2M11 31h2M14 31h3M19 31h1M21 31h1M24 31h5M32 31h3M36 31h1M0 32h1M2 32h3M6 32h1M9 32h4M17 32h1M21 32h1M28 32h5M34 32h3M0 33h1M2 33h3M6 33h1M8 33h2M11 33h3M15 33h1M17 33h1M19 33h1M22 33h1M26 33h2M29 33h3M33 33h2M36 33h1M0 34h1M2 34h3M6 34h1M10 34h1M12 34h1M16 34h1M18 34h2M25 34h2M30 34h3M34 34h1M36 34h1M0 35h1M6 35h1M9 35h3M15 35h1M21 35h1M26 35h2M29 35h5M36 35h1M0 36h7M8 36h4M13 36h1M16 36h3M21 36h3M26 36h1M28 36h1M34 36h1M36 36h1"/></svg>
+<div class="c"><small>Chave Pix</small><b id="pix">79996551031</b></div>
+<button class="btn" style="margin-top:14px" onclick="copyS($('#pix').textContent,'Chave Pix copiada')">Copiar chave Pix</button>
+<button class="btn ghost" onclick="go(cur)">Voltar</button>
+</section>
+</main>
+<nav>
+<button class="on" data-t="home"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg>Aparelho</button>
+<button data-t="sensi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/></svg>Sensi</button>
+</nav>
+</div>
+<div id="toast"></div>
+<i class="spin" id="spin" hidden></i>
+<script>
+const $=s=>document.querySelector(s),clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+// A versão padrão vem do próprio HTML. Em WebViews com ponte nativa,
+// tenta obter a versão instalada do aplicativo e usa o HTML como fallback.
+function detectAppVersion(){
+ const fallback=document.querySelector('meta[name="app-version"]')?.content||'1.5.3';
+ try{
+  const bridge=window.Android;
+  const nativeVersion=bridge&&(typeof bridge.getAppVersion==='function'?bridge.getAppVersion():bridge.appVersion);
+  const version=String(nativeVersion||fallback).trim();
+  return /^[0-9]+(?:\.[0-9A-Za-z-]+){1,3}$/.test(version)?version:fallback;
+ }catch(_){return fallback}
+}
+const APP_VERSION=detectAppVersion();
+document.getElementById('appVersion').textContent='Versão '+APP_VERSION;
+
+// ===== Fluxo de entrada ZnisBack =====
+function gateTo(id){
+ document.querySelectorAll('.gate-panel').forEach(panel=>panel.classList.toggle('active',panel.id===id));
+ const panel=document.getElementById(id);
+ if(panel){const input=panel.querySelector('input');if(input)setTimeout(()=>input.focus(),180)}
+}
+function chooseRole(role){
+ if(role==='owner'){
+  $('#gateAnswer1').value='';$('#gateError1').textContent='';$('#gateError2').textContent='';
+  gateTo('gate-owner-q1');
+ }else{
+  $('#gateUserName').value='';$('#gateUserError').textContent='';
+  gateTo('gate-user');
+ }
+}
+function normalizeAnswer(value){
+ return String(value||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
+}
+function gateError(panelId,errorId,message){
+ const panel=document.getElementById(panelId),error=document.getElementById(errorId);
+ error.textContent=message;
+ panel.classList.remove('shake');void panel.offsetWidth;panel.classList.add('shake');
+}
+function verifyOwnerQ1(){
+ const answer=normalizeAnswer($('#gateAnswer1').value);
+ if(answer==='meu vo'||answer==='meu avo'){
+  $('#gateError1').textContent='';gateTo('gate-owner-q2');
+ }else{
+  gateError('gate-owner-q1','gateError1','❌ Resposta incorreta. Tente novamente.');
+ }
+}
+function verifyOwnerQ2(choice){
+ if(choice==='bela'){
+  unlockApp('Acesso de ZnisBack liberado! 👑');
+ }else{
+  gateError('gate-owner-q2','gateError2','❌ Resposta incorreta. Acesso não autorizado.');
+  setTimeout(()=>{
+   $('#gateAnswer1').value='';$('#gateError2').textContent='';gateTo('gate-role');
+  },1500);
+ }
+}
+function enterAsUser(){
+ const name=$('#gateUserName').value.trim();
+ if(!name){gateError('gate-user','gateUserError','Digite seu nome para continuar.');return}
+ unlockApp('Olá, '+name+'!');
+}
+function unlockApp(message){
+ const gate=$('#accessGate');
+ gate.classList.remove('show');gate.setAttribute('aria-hidden','true');
+ setTimeout(()=>{gate.style.display='none'},380);
+ go('home');
+ toast(message);
+}
+$('#gateAnswer1').addEventListener('keydown',e=>{if(e.key==='Enter')verifyOwnerQ1()});
+$('#gateUserName').addEventListener('keydown',e=>{if(e.key==='Enter')enterAsUser()});
+// ===== Fim do fluxo de entrada =====
+
+const NAMES={geral:'Geral',red:'Ponto Vermelho',x2:'Mira 2x',x4:'Mira 4x',awm:'AWM / Sniper',free:'Olhar Livre'};
+/* Ponto de partida equilibrado para arrasto/capa na escala atual de 0 a 200. */
+const BASE={geral:186,red:180,x2:160,x4:145,awm:90,free:130};
+const CELLS=[['cores','Núcleos da CPU'],['ram','Memória RAM'],['gpu','GPU'],['res','Resolução'],['dpi','Densidade'],['hz','Taxa da tela'],['and','Android'],['bm','Teste de CPU']];
+const TIERS=[[.3,'Básico','Aparelho de entrada: use gráficos baixos, FPS estável e feche apps em segundo plano. A sensi foi reduzida para a mira não escapar em travadas.'],[.5,'Intermediário','Use gráficos Suave ou Padrão com FPS Alto. Teste no treino e ajuste de 4 em 4 pontos.'],[.75,'Premium','Ative FPS Alto ou Extremo se disponível. Ajuste fino no treino: até 6 pontos para mais ou para menos.'],[2,'Flagship','Aproveite 90 ou 120 FPS no jogo. Se a mira passar do alvo, reduza 4 a 6 pontos nas miras.']];
+const MAX=200,K=MAX/100,BTN={fire:['Tamanho',46]};
+let info,last,lastB,forceHz=0,cur='home',busy=false,hzAuto=0,meas=null,tt;
+
+$('#grid').innerHTML=CELLS.map(([k,l])=>`<div class="c${k=='gpu'?' w':''}"><small>${l}</small><b id="v-${k}">—</b></div>`).join('');
+
+$('#hzr').innerHTML=[0,60,90,120,144,165].map(v=>`<button data-h="${v}"${v?'':' class="on"'}>${v?v+' Hz':'Auto'}</button>`).join('');
+$('#hzr').onclick=e=>{const b=e.target.closest('button');if(!b)return;forceHz=+b.dataset.h;document.querySelectorAll('#hzr button').forEach(x=>x.classList.toggle('on',x==b));applyHz();if(!forceHz)detect('set')};
+let GPU;function gpuName(){if(GPU)return GPU;try{const g=document.createElement('canvas').getContext('webgl'),e=g.getExtension('WEBGL_debug_renderer_info');GPU=String(g.getParameter(e?e.UNMASKED_RENDERER_WEBGL:g.RENDERER));const l=g.getExtension('WEBGL_lose_context');if(l)l.loseContext();return GPU}catch(e){return 'Desconhecida'}}
+function gpuScore(n){let m;
+ if(m=n.match(/Adreno.*?(\d{3})/i))return clamp((+m[1]-500)/300,.15,1);
+ if(m=n.match(/Mali-?G(\d+)/i)){const v=+m[1];return v>=710?.88:v>=610?.6:v>=78?.8:v>=76?.65:v>=57?.4:.25}
+ if(/Apple/i.test(n))return .95;
+ if(/swiftshader|llvmpipe|software/i.test(n))return .1;
+ return .4}
+const HZS=[240,180,165,144,120,90,60,48,30],SNAP=[30,48,50,60,72,75,80,90,96,100,120,144,165,180,240];
+/* Estima a taxa da tela pelos intervalos (ms) entre quadros: escolhe a MAIOR taxa que tenha quadros de 1 período e cujos demais intervalos sejam múltiplos dela, então quedas de FPS não enganam */
+function pickHz(d){const n=d.length;if(n<12)return 0;const near=(x,T)=>Math.abs(x-T)<=T*.06;
+ for(const h of HZS){const T=1000/h;if(d.filter(x=>near(x,T)).length<n*.25)continue;
+  if(d.filter(x=>{const k=Math.round(x/T);return k>0&&near(x,k*T)}).length>=n*.75)return h}
+ const v=1000/[...d].sort((a,b)=>a-b)[n>>1];return SNAP.reduce((a,b)=>Math.abs(b-v)<Math.abs(a-v)?b:a)}
+const hzAdj=h=>{const P=[[30,-4],[48,-3],[60,0],[72,2],[90,4],[120,6],[144,7],[165,8],[240,9]];if(!h)return 0;if(h<=30)return -4;for(let i=1;i<P.length;i++)if(h<=P[i][0])return P[i-1][1]+(P[i][1]-P[i-1][1])*(h-P[i-1][0])/(P[i][0]-P[i-1][0]);return 9};
+/* Gira um indicador visível a cada quadro (sem animação o Android baixa a taxa da tela); aquece 0,45 s e mede ~1,1 s */
+function measure(el){return new Promise(res=>{let p=0,t0=0,bad=document.hidden,done=false;const d=[],vc=()=>{if(document.hidden)bad=true},fin=()=>{if(done)return;done=true;document.removeEventListener('visibilitychange',vc);res(bad?0:pickHz(d))};
+ document.addEventListener('visibilitychange',vc);
+ const f=t=>{t0=t0||t;el.style.transform='rotate('+(t-t0)*.36+'deg)';if(p&&t-t0>450)d.push(t-p);p=t;t-t0<1550?requestAnimationFrame(f):fin()};
+ requestAnimationFrame(f);setTimeout(fin,5000)})}
+function applyHz(){info.hz=forceHz||hzAuto||0;$('#hzr button[data-h="0"]').textContent=hzAuto?'Auto ('+hzAuto+' Hz)':'Auto';fill(info);if(info.perf!=null)show(1)}
+/* 'set' troca o valor; 'up' só aceita taxa maior (a tela pode baixar a taxa por economia de bateria) */
+function detect(mode){if(meas)return meas;const sp=$('#spin');sp.hidden=false;
+ meas=measure(sp).then(v=>{if(v)hzAuto=mode=='up'?Math.max(hzAuto,v):v}).catch(()=>{}).then(()=>{sp.hidden=true;meas=null;applyHz()});
+ applyHz();return meas}
+function bench(){let x=0,n=0,t=performance.now();
+ while(performance.now()-t<60){for(let k=0;k<5e3;k++)x+=Math.sqrt(k)*Math.sin(k)}
+ t=performance.now();
+ while(performance.now()-t<400){for(let k=0;k<5e3;k++)x+=Math.sqrt(k)*Math.sin(k);n+=5e3}
+ return n/(performance.now()-t)+(x>1e12?1:0)}
+function base(){const d=devicePixelRatio||1,w=screen.width,h=screen.height;
+ return{cores:navigator.hardwareConcurrency||4,ram:navigator.deviceMemory,gpu:gpuName(),and:(navigator.userAgent.match(/Android ([\d.]+)/)||[])[1]||'—',pw:Math.round(Math.min(w,h)*d),ph:Math.round(Math.max(w,h)*d),dp:Math.min(w,h),dpi:Math.round(d*160)}}
+function fill(i){const v={cores:i.cores+' núcleos',ram:i.ram?(i.ram>=8?'8+':i.ram)+' GB':'—',gpu:i.gpu.replace(/^ANGLE \([^,]*, ?/,'').replace(/,.*$/,''),res:i.pw+' × '+i.ph,dpi:i.dpi+' dpi',hz:i.hz?i.hz+' Hz'+(forceHz?' (manual)':''):(meas?'Medindo…':'—'),and:i.and,bm:i.bm?i.bm+' pts':'—'};for(const k in v)$('#v-'+k).textContent=v[k]}
+
+/*
+ * Sensibilidade não é determinada pela potência da CPU/GPU nem pela resolução.
+ * O benchmark continua servindo apenas para diagnóstico do aparelho; não distorce
+ * os controles de mira com estimativas que não medem o toque do jogador.
+ */
+function calc(i){
+ return Object.fromEntries(Object.keys(BASE).map(k=>[k,clamp(Math.round(BASE[k]),1,MAX)]));
+}
+/* Botão de atirar: % do tamanho no HUD, escalado pelo tamanho físico da tela (dp = DPI ÷ 160 pol.) */
+function calcBtn(i){const f=clamp(Math.pow(412/i.dp,.7),.7,1.2);return Object.fromEntries(Object.keys(BTN).map(k=>[k,clamp(Math.round(BTN[k][1]*f),20,100)]))}
+
+async function scan(){
+ if(busy)return;busy=true;
+ const b=$('#go'),st=$('#st'),bar=$('#bar');b.disabled=true;
+ const step=async(t,p,f)=>{st.textContent=t;bar.style.width=p+'%';await sleep(90);return f?f():sleep(300)};
+ try{
+  info=base();info.hz=forceHz||hzAuto;fill(info);
+  await step('Lendo hardware e tela…',15);
+  await step('Medindo a taxa de atualização…',40,()=>detect('set'));
+  info.hz=forceHz||hzAuto;
+  const ops=await step('Testando o processamento…',70,bench);
+  info.bm=Math.round(ops/100);fill(info);
+  await step('Calculando sua sensi…',95);
+  const cs=clamp((info.cores-2)/6,0,1),rs=clamp(Math.log2(Math.max(info.ram||4,1))/3,0,1),bs=clamp((ops-6000)/50000,0,1);
+  info.perf=.22*cs+.22*rs+.34*bs+.22*gpuScore(info.gpu);
+  bar.style.width='100%';st.textContent='Sensi gerada';b.textContent='Escanear novamente';
+  show();
+ }catch(e){bar.style.width='0';st.textContent='Não deu para escanear. Toque para tentar de novo.'}
+ finally{b.disabled=false;busy=false}}
+
+function show(q){
+ const s=last=calc(info),bt=lastB=calcBtn(info),p=Math.round(info.perf*100),T=TIERS.find(t=>info.perf<t[0]);
+ $('#tier').hidden=false;$('#tier').textContent=T[1];$('#empty').hidden=true;
+ $('#res').innerHTML=`<div class="pw"><span class="mut">Potência do aparelho</span><div class="pv"><b>${p}</b><small class="mut">/100</small></div><div class="t"><i style="--w:${p}%"></i></div></div>`
+ +Object.keys(NAMES).map(k=>`<div class="r"><span>${NAMES[k]}</span><div class="t"><i style="--w:${s[k]/K}%"></i></div><b>${s[k]}</b></div>`).join('')
+ +`<h3>Botão de atirar <small class="mut">(% no HUD)</small></h3>`+Object.keys(BTN).map(k=>`<div class="r"><span>${BTN[k][0]}</span><div class="t"><i style="--w:${bt[k]}%"></i></div><b>${bt[k]}</b></div>`).join('')
+ +`<p class="tip">Perfil inicial para arrasto/capa: Geral e Ponto Vermelho mais rápidos; miras longas mais controladas. ${T[2]} Ajuste de 3 a 5 pontos por vez no modo treino.</p><button class="btn" onclick="copyS()">Copiar sensi</button><button class="btn ghost" onclick="redo()">Refazer escaneamento</button><div class="game-grid" style="margin-top:14px"><button class="game-btn" type="button" onclick="openGame('com.dts.freefireth','Free Fire')"><b>ABRIR FREE FIRE</b><small>Google Play</small></button><button class="game-btn" type="button" onclick="openGame('com.dts.freefiremax','Free Fire MAX')"><b>ABRIR FREE FIRE MAX</b><small>Google Play</small></button></div>`;
+ q||go('sensi')}
+
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),1800)}
+function openGame(pkg,name){
+ const valid={
+  'com.dts.freefireth':'Free Fire',
+  'com.dts.freefiremax':'Free Fire MAX'
+ };
+ if(!valid[pkg])return;
+ const gameName=valid[pkg];
+ const playUrl='https://play.google.com/store/apps/details?id='+pkg;
+ const intentUrl='intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package='+pkg+';S.browser_fallback_url='+encodeURIComponent(playUrl)+';end';
+ let leftPage=false;
+ const markLeft=()=>{leftPage=true};
+ window.addEventListener('pagehide',markLeft,{once:true});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)leftPage=true},{once:true});
+ toast('Tentando abrir '+gameName+'…');
+ try{location.href=intentUrl}catch(e){location.href=playUrl;return}
+ // Fallback para navegadores/WebViews que não encaminham links intent://.
+ setTimeout(()=>{if(!leftPage&&!document.hidden)location.href=playUrl},1400);
+}
+function copyS(x,m){
+ const t=x||'ZNISBACK | Sensi Free Fire / Free Fire MAX\n'+Object.keys(NAMES).map(k=>NAMES[k]+': '+last[k]).join('\n')+'\n\nBotão de atirar: '+lastB.fire+'%',ok=()=>toast(m||'Sensi copiada'),
+ fb=()=>{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0;-webkit-user-select:text;user-select:text';document.body.append(a);a.select();try{document.execCommand('copy');ok()}catch(e){}a.remove()};
+ try{navigator.clipboard.writeText(t).then(ok,fb)}catch(e){fb()}}
+function redo(){go('home');scan()}
+function go(n){if(n!='dev')cur=n;document.querySelectorAll('.screen').forEach(e=>e.classList.toggle('on',e.id=='s-'+n));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t==n))}
+
+info=base();fill(info);
+$('#go').onclick=scan;
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.t));
+const finishIntro=()=>{$('#splash').classList.add('off');const gate=$('#accessGate');gate.style.display='flex';gate.classList.add('show');gate.setAttribute('aria-hidden','false')};
+Promise.race([detect('set'),sleep(2600)]).then(finishIntro,finishIntro);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(()=>{if(!document.hidden&&!meas&&!busy)detect(hzAuto?'up':'set')},400)});
+addEventListener('pointerdown',()=>{if(hzAuto&&hzAuto<=60)setTimeout(()=>{if(!meas&&!busy)detect('up')},120)},{once:true});
+</script>
+</body>
+</html>
