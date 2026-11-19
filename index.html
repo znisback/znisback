@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0e1220">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="ZnisBack">
-<meta name="app-version" content="1.5.6">
+<meta name="app-version" content="1.5.7">
 <title>ZnisBack - Gerador de Sensi FF</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" onerror="window.__qrcodeFailed=true"></script>
 <style>
@@ -124,6 +124,13 @@ nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stro
 .feature-stat small{display:block;color:var(--mut)}
 .feature-stat b{font-size:19px;color:var(--b)}
 .news-section-title{margin:12px 0 6px;font-weight:800;font-size:13px}
+.pop{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;background:#000c;opacity:0;visibility:hidden;transition:.25s}
+.pop.show{opacity:1;visibility:visible}
+.pop-card{width:100%;max-width:340px;background:#14110d;border:1px solid #ff7a1a55;border-radius:20px;padding:16px;text-align:center;box-shadow:0 20px 60px #000a;transform:scale(.94);transition:.25s}
+.pop.show .pop-card{transform:none}
+.pop-card b{font:900 18px system-ui,sans-serif;color:#fff}
+.pop-card img{display:block;width:100%;max-height:48vh;object-fit:cover;border-radius:14px;margin-top:12px}
+.pop-card .btn{margin-top:14px;font-size:15px;padding:13px}
 </style>
 </head>
 <body>
@@ -174,7 +181,7 @@ nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stro
 </div>
 
 <div id="app">
-<header><div class="brand-lockup"><div class="logo">ZNIS<b>BACK</b></div><span class="app-version" id="appVersion">Versão 1.5.6</span></div><button class="badge" id="tier" hidden onclick="go('dev')" title="Ajuda o dev">Ajuda o dev 💛</button></header>
+<header><div class="brand-lockup"><div class="logo">ZNIS<b>BACK</b></div><span class="app-version" id="appVersion">Versão 1.5.7</span></div><button class="badge" id="tier" hidden onclick="go('dev')" title="Ajuda o dev">Ajuda o dev 💛</button></header>
 <main>
 <section class="screen on" id="s-home">
 <h2>Seu aparelho</h2>
@@ -197,10 +204,13 @@ nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stro
 <h2>Explorar Z</h2><p class="mut">Ferramentas pessoais e recursos exclusivos.</p>
 <h3>Menu Usuário</h3><div class="feature-grid">
 <button class="feature-card" onclick="featureOpen('intelligence')"><span class="feature-icon">✦</span><b>ZnisBack Intelligence</b><small>Recomendações de sensibilidade</small></button>
+<button class="feature-card" onclick="featureOpen('ai')"><span class="feature-icon">🤖</span><b>ZnisBack AI</b><small>Assistente inteligente</small></button>
 <button class="feature-card" onclick="featureOpen('daily')"><span class="feature-icon">🔥</span><b>Desafio diário</b><small>Missão, XP e sequência</small></button>
 <button class="feature-card" onclick="featureOpen('compare')"><span class="feature-icon">⇄</span><b>Comparador</b><small>Compare seus presets</small></button>
 <button class="feature-card" onclick="featureOpen('profile')"><span class="feature-icon">👤</span><b>Perfil Gamer</b><small>Seu estilo de jogo</small></button>
 <button class="feature-card" onclick="featureOpen('presets')"><span class="feature-icon">🎚️</span><b>Meus Presets</b><small>Salve e organize sensis</small></button>
+<button class="feature-card" onclick="featureOpen('tune')"><span class="feature-icon">🎯</span><b>Ajuste pós-treino</b><small>Corrija a sensi com seu feedback</small></button>
+<button class="feature-card" onclick="featureOpen('share')"><span class="feature-icon">📤</span><b>Compartilhar presets</b><small>Exporte e importe por código</small></button>
 </div>
 <h3>Menu ZnisBack</h3><div class="feature-grid">
 <button class="feature-card" onclick="featureOpen('ip')"><span class="feature-icon">🌐</span><b>Verificar IP</b><small>Informações da conexão</small></button>
@@ -231,6 +241,32 @@ nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stro
 // ZNISBACK — CHANGELOG / CENTRAL DE NOVIDADES
 // ============================================================
 const NEWS = [
+ { version:'1.5.8', sections:[
+   {type:'new', label:'Novidades', items:[
+     'Ajuste pós-treino: diga como a mira ficou e a sensi é corrigida, com histórico e efeito nos próximos escaneamentos',
+     'Compartilhar presets: exporte e importe por código para enviar a amigos ou fazer backup'
+   ]},
+   {type:'fix', label:'Correções', items:[
+     'Potência do aparelho e Teste de CPU agora são calculados de verdade (antes apareciam sempre 50/100)',
+     'Sensi considera a potência: aparelhos Básicos recebem uma sensi mais controlada',
+     'Preset aplicado não é mais sobrescrito ao medir o Hz de novo',
+     'Medição de Hz limitada em telas de 60 Hz (sem spinner a cada toque)',
+     'ZnisBack AI compatível com WebViews antigos',
+     'Desafio diário usa o horário local e a sequência zera ao pular um dia',
+     'GPUs Mali-G310 e G510 classificadas corretamente',
+     'Presets não são mais duplicados ao salvar a recomendação do Intelligence ou importar um código repetido'
+   ]}
+ ]},
+ { version:'1.5.7', sections:[
+   {type:'new', label:'Novidades', items:[
+     'Assistente ZnisBack AI com interface de chat integrada',
+     'Chat preparado para conexão segura com uma API de IA via servidor intermediário',
+     'Contexto básico do aparelho pode ser enviado junto à pergunta quando disponível'
+   ]},
+   {type:'sec', label:'Segurança', items:[
+     'A chave da API não deve ser armazenada nem exposta no HTML público; integração depende de endpoint protegido'
+   ]}
+ ]},
  { version:'1.5.6', sections:[
    {type:'new', label:'Novidades', items:[
      'QR Pix real (gerado dinamicamente)',
@@ -276,7 +312,7 @@ const NEWS_COLOR = {new:'#7bd88f', fix:'#ffc233', sec:'#ff7a1a'};
 // ============================================================
 
 // ===== Constantes globais =====
-const APP_VERSION_FALLBACK = '1.5.6';
+const APP_VERSION_FALLBACK = '1.5.7';
 const PIX_KEY   = '+5579996551031';
 const PIX_NAME  = 'ROBERTO FRANCA DE JESUS';
 const PIX_CITY  = 'BRASIL';
@@ -423,14 +459,15 @@ function unlockApp(message){
  setTimeout(() => { gate.style.display = 'none'; }, 380);
  go('home');
  toast(message);
+ setTimeout(showPopup, 900);
 }
 $('#gateAnswer1').addEventListener('keydown', e => { if(e.key === 'Enter') verifyOwnerQ1(); });
 $('#gateUserName').addEventListener('keydown', e => { if(e.key === 'Enter') enterAsUser(); });
 
 // ===== Estado do aparelho =====
 let info, last, lastB, forceHz = 0, cur = 'home', busy = false, hzAuto = 0, meas = null, tt;
-let _lastIP = '', _lastSuggestion = null, _lastDiag = '';
-let hzRetryPending = false, GPU;
+let _lastIP = '', _lastSuggestion = null, _lastDiag = '', presetOn = null;
+let hzRetryPending = false, hzTries = 0, GPU;
 
 $('#grid').innerHTML = CELLS.map(([k,l]) => `<div class="c${k==='gpu'?' w':''}"><small>${l}</small><b id="v-${k}">—</b></div>`).join('');
 $('#hzr').innerHTML = [0,60,90,120,144,165].map(v => `<button data-h="${v}"${v?'':' class="on"'}>${v?v+' Hz':'Auto'}</button>`).join('');
@@ -455,7 +492,7 @@ function gpuName(){
 function gpuScore(n){
  let m;
  if(m = n.match(/Adreno.*?(\d{3})/i)) return clamp((+m[1]-500)/300,.15,1);
- if(m = n.match(/Mali-?G(\d+)/i)){ const v = +m[1]; return v>=710?.88 : v>=610?.6 : v>=78?.8 : v>=76?.65 : v>=57?.4 : .25 }
+ if(m = n.match(/Mali-?G(\d+)/i)){ const v = +m[1]; return v>=710?.88 : v>=610?.6 : v>=310?.4 : v>=78?.8 : v>=76?.65 : v>=57?.4 : .25 }
  if(/Apple/i.test(n)) return .95;
  if(/swiftshader|llvmpipe|software/i.test(n)) return .1;
  return .4;
@@ -553,8 +590,8 @@ function calc(i){
  const dpFactor = clamp(Math.pow(dpBase / dp, 0.30), 0.90, 1.12);
  const hzFactor = 1 + (hzAdj(i.hz || 60) * 0.008);
  return Object.fromEntries(Object.keys(BASE).map(k => {
-  const v = BASE[k] * dpFactor * hzFactor;
-  return [k, clamp(Math.round(v), 1, MAX)];
+  const v = BASE[k] * dpFactor * hzFactor * (i.perf < .3 ? .94 : 1);
+  return [k, clamp(Math.round(v) + ((fdata().off || {})[k] || 0), 1, MAX)];
  }));
 }
 function calcBtn(i){
@@ -568,7 +605,8 @@ async function scan(){
  const step = async (t, p, f) => {
   st.textContent = t; bar.style.width = p + '%';
   await sleep(90);
-  if(f) await f(); else await sleep(300);
+  if(f) return await f();
+  await sleep(300);
  };
  try{
   info = base(); info.hz = forceHz || hzAuto; fill(info);
@@ -596,7 +634,8 @@ function show(q, forced){
  // 1. Correção do NaN: Garante que info.perf seja um número válido
  let perfValue = (info && typeof info.perf === 'number' && !isNaN(info.perf)) ? info.perf : 0.5;
  
- const s = last = forced || calc(info);
+ if(forced) presetOn = forced; else if(!q) presetOn = null;
+ const s = last = forced || presetOn || calc(info);
  const bt = lastB = calcBtn(info);
  const p = Math.round(perfValue * 100);
  const T = TIERS.find(t => perfValue < t[0]) || TIERS[TIERS.length-1];
@@ -672,14 +711,15 @@ function go(n){
 // ===== Recursos adicionais =====
 function fdata(){ try{ return JSON.parse(localStorage.getItem(FBKEY) || '{}'); }catch(e){ return {}; } }
 function fsave(d){ try{ localStorage.setItem(FBKEY, JSON.stringify(d)); }catch(e){} }
+const presetSig = p => p.name + '|' + Object.keys(NAMES).map(k => (p.values || {})[k]).join(',');
 
 function featureOpen(id){
  const d = fdata();
  const title = {
-  intelligence:'ZnisBack Intelligence', daily:'Desafio diário',
+  intelligence:'ZnisBack Intelligence', ai:'ZnisBack AI', daily:'Desafio diário',
   compare:'Comparador de configurações', profile:'Perfil Gamer',
   presets:'Meus Presets', ip:'Verificar IP',
-  news:'Central de novidades', device:'Diagnóstico do dispositivo'
+  news:'Central de novidades', device:'Diagnóstico do dispositivo', tune:'Ajuste pós-treino', share:'Compartilhar presets'
  };
  $('#featureTitle').textContent = title[id] || 'ZnisBack';
  $('#featureModal').classList.add('show');
@@ -687,13 +727,46 @@ function featureOpen(id){
  if(id === 'profile') renderProfile(body, d);
  else if(id === 'presets') renderPresets(body, d);
  else if(id === 'intelligence') renderIntelligence(body);
+ else if(id === 'ai') renderAI(body);
  else if(id === 'daily') renderDaily(body, d);
  else if(id === 'compare') renderCompare(body, d);
  else if(id === 'ip') renderIP(body);
  else if(id === 'news') renderNews(body);
  else if(id === 'device') renderDevice(body);
+ else if(id === 'tune') renderTune(body, d);
+ else if(id === 'share') renderShare(body);
 }
 function featureClose(){ $('#featureModal').classList.remove('show'); }
+
+// ===== ZnisBack AI (frontend; requer endpoint backend protegido) =====
+const ZNISBACK_AI_ENDPOINT = '/api/znisback-ai';
+function renderAI(b){
+ b.innerHTML = `<p>Converse com o assistente do ZnisBack sobre sensibilidade, desempenho e configurações de jogo.</p>
+  <div id="ai-chat" style="display:flex;flex-direction:column;gap:10px;max-height:45vh;overflow:auto;padding:8px;border:1px solid var(--line);border-radius:14px;background:#0b1020">
+   <div class="feature-result"><b>ZnisBack AI</b><p>Olá! Posso ajudar com configurações e dúvidas sobre o ZnisBack. A conexão com a IA precisa de um servidor seguro para proteger a chave da API.</p></div>
+  </div>
+  <label for="ai-input">Sua mensagem</label><textarea id="ai-input" rows="3" maxlength="1200" placeholder="Ex.: Como ajustar minha sensibilidade para melhorar o controle?"></textarea>
+  <button class="btn" id="ai-send" onclick="sendAI()">Enviar mensagem</button>
+  <p class="tip" id="ai-status">Integração preparada. O endpoint seguro ainda precisa ser configurado.</p>`;
+}
+async function sendAI(){
+ const input=$('#ai-input'), chat=$('#ai-chat'), status=$('#ai-status'), button=$('#ai-send');
+ const message=(input.value||'').trim(); if(!message) return;
+ const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),30000);
+ const user=document.createElement('div'); user.className='feature-result'; user.innerHTML='<b>Você</b><p></p>'; user.querySelector('p').textContent=message; chat.appendChild(user);
+ input.value=''; button.disabled=true; status.textContent='Enviando…';
+ const waiting=document.createElement('div'); waiting.className='feature-result'; waiting.textContent='ZnisBack AI está pensando…'; chat.appendChild(waiting); chat.scrollTop=chat.scrollHeight;
+ try{
+  const device={android:(navigator.userAgent.match(/Android\s([\d.]+)/)||[])[1]||null, cores:navigator.hardwareConcurrency||null, ramGB:navigator.deviceMemory||null, screen:`${screen.width}x${screen.height}`, online:navigator.onLine};
+  const response=await fetch(ZNISBACK_AI_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,device}),signal:ctl.signal});
+  if(!response.ok) throw new Error(response.status===404?'Endpoint de IA ainda não configurado.':'Falha no servidor de IA.');
+  const data=await response.json(); const answer=String(data.reply||data.answer||'A IA não retornou uma resposta.');
+  waiting.innerHTML='<b>ZnisBack AI</b><p></p>'; waiting.querySelector('p').textContent=answer; status.textContent='Resposta recebida.';
+ }catch(err){
+  waiting.innerHTML='<b>ZnisBack AI</b><p></p>'; waiting.querySelector('p').textContent=(err.name==='TimeoutError'||err.name==='AbortError')?'A resposta demorou demais. Tente novamente.':(err.message||'Não foi possível conectar à IA.');
+  status.textContent='Servidor seguro ainda não conectado. Não coloque sua chave API no HTML.';
+ }finally{clearTimeout(timer);button.disabled=false;chat.scrollTop=chat.scrollHeight;}
+}
 
 function renderProfile(b, d){
  const p = d.profile || {};
@@ -767,6 +840,73 @@ function deletePreset(i){
  fsave(d); featureOpen('presets');
 }
 
+// ===== Pop-up =====
+const POPUP_TEXT = 'Natan olhando a nova sensi: realmente. 🐶';
+let _popShown = false;
+function showPopup(){ if(_popShown) return; _popShown = true; $('#popText').textContent = POPUP_TEXT; const p = $('#pop'); p.classList.add('show'); p.setAttribute('aria-hidden','false'); }
+function closePopup(){ const p = $('#pop'); p.classList.remove('show'); p.setAttribute('aria-hidden','true'); }
+
+// ===== Ajuste pós-treino =====
+const TUNE_FB = {fast:['Passa do alvo (rápida demais)',-4], slow:['Pesada / não acompanha (lenta)',4], fine:['Difícil de ajustar fino',-3]};
+function renderTune(b, d){
+ const h = d.tune || [];
+ b.innerHTML = `<p>Testou no treino? Diga como a mira se comportou e o ZnisBack corrige a sensi em 3 a 4 pontos. O ajuste fica salvo e vale nos próximos escaneamentos.</p>
+  <label for="tn-k">Mira</label><select id="tn-k">${Object.keys(NAMES).map(k => `<option value="${k}">${NAMES[k]}</option>`).join('')}</select>
+  <label for="tn-f">Como ficou?</label><select id="tn-f">${Object.keys(TUNE_FB).map(k => `<option value="${k}">${TUNE_FB[k][0]}</option>`).join('')}</select>
+  <button class="btn" onclick="applyTune()">Aplicar ajuste</button>
+  <h3>Histórico (${h.length})</h3>
+  ${h.length ? h.slice(0,8).map(x => `<div class="feature-result"><b>${esc(NAMES[x.k] || x.k)}: ${esc(x.from)} → ${esc(x.to)}</b><p>${esc(x.fb)} · ${esc(x.when)}</p></div>`).join('') + '<button class="btn ghost" onclick="resetTune()">Zerar ajustes</button>' : '<div class="feature-result">Nenhum ajuste ainda.</div>'}`;
+}
+function applyTune(){
+ const k = $('#tn-k').value, fb = TUNE_FB[$('#tn-f').value];
+ if(!fb || !(k in NAMES)) return;
+ info = info || base();
+ const cur = Object.assign({}, last || calc(info)), from = cur[k];
+ cur[k] = clamp(from + fb[1], 1, MAX);
+ const d = fdata(); d.off = d.off || {}; d.off[k] = clamp((d.off[k] || 0) + fb[1], -20, 20);
+ d.tune = [{k, from, to: cur[k], fb: fb[0], when: new Date().toLocaleDateString('pt-BR')}].concat(d.tune || []).slice(0, 30);
+ fsave(d); show(true, cur);
+ toast(NAMES[k] + ': ' + from + ' → ' + cur[k]); featureOpen('tune');
+}
+function resetTune(){
+ const d = fdata(); d.off = {}; d.tune = []; fsave(d);
+ presetOn = null; if(last) show(1);
+ toast('Ajustes zerados'); featureOpen('tune');
+}
+
+// ===== Compartilhar presets =====
+let _shareCode = '';
+function renderShare(b){
+ b.innerHTML = `<p>Gere um código dos seus presets para enviar a um amigo (ou guardar como backup) e cole aqui um código recebido para importar.</p>
+  <button class="btn" onclick="exportPresets()">Gerar código dos meus presets</button>
+  <div id="sh-out"></div>
+  <label for="sh-in">Colar código recebido</label><textarea id="sh-in" rows="3" placeholder="ZB1.…"></textarea>
+  <button class="btn ghost" onclick="importPresets()">Importar presets</button>`;
+}
+function exportPresets(){
+ const a = fdata().presets || [];
+ if(!a.length){ toast('Salve um preset primeiro', true); return; }
+ _shareCode = 'ZB1.' + btoa(encodeURIComponent(JSON.stringify(a.map(p => ({n:p.name, v:p.values})))));
+ $('#sh-out').innerHTML = `<div class="feature-result"><b>${a.length} preset(s) no código</b><p style="word-break:break-all;user-select:text;-webkit-user-select:text">${_shareCode}</p><button class="btn ghost" onclick="copyS(_shareCode,'Código copiado')">Copiar código</button></div>`;
+}
+function importPresets(){
+ try{
+  const raw = $('#sh-in').value.replace(/\s+/g,'');
+  if(raw.slice(0,4) !== 'ZB1.') throw 0;
+  const list = JSON.parse(decodeURIComponent(atob(raw.slice(4))));
+  if(!Array.isArray(list)) throw 0;
+  const ok = list.slice(0,30).map(x => {
+   const v = {}; Object.keys(NAMES).forEach(k => v[k] = clamp(Math.round(Number(x && x.v && x.v[k])) || 1, 1, MAX));
+   return {name: String((x && x.n) || 'Preset').slice(0,40), values: v, created: new Date().toISOString()};
+  });
+  if(!ok.length) throw 0;
+  const d = fdata(), have = new Set((d.presets || []).map(presetSig)), add = ok.filter(x => !have.has(presetSig(x)));
+  if(!add.length){ toast('Esses presets já estão salvos'); return; }
+  d.presets = add.concat(d.presets || []).slice(0,100); fsave(d);
+  toast(add.length + ' preset(s) importado(s)'); featureOpen('presets');
+ }catch(e){ toast('Código inválido', true); }
+}
+
 function renderIntelligence(b){
  b.innerHTML = `<p>Responda para receber uma sugestão inicial de sensibilidade. Use como ponto de partida e ajuste no treinamento.</p>
   <label>Estilo</label><select id="in-style"><option>Rush</option><option>Precisão</option><option>Equilibrado</option><option>Suporte</option></select>
@@ -794,12 +934,16 @@ function suggestSensi(){
 function saveSuggestedPreset(){
  if(!_lastSuggestion) return;
  const d = fdata(); d.presets = d.presets || [];
- d.presets.unshift({name: 'Intelligence · ' + new Date().toLocaleDateString('pt-BR'), values: _lastSuggestion});
+ const np = {name: 'Intelligence · ' + new Date().toLocaleDateString('pt-BR'), values: _lastSuggestion};
+ if(d.presets.some(x => presetSig(x) === presetSig(np))){ toast('Essa recomendação já está nos presets'); return; }
+ d.presets.unshift(np);
  fsave(d); toast('Recomendação salva nos presets');
 }
 
+const localDay = (dt = new Date()) => dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0');
+function streakNow(d){ const y = new Date(); y.setDate(y.getDate()-1); const l = d.daily && d.daily.date; return (l === localDay() || l === localDay(y)) ? (d.streak || 0) : 0; }
 function renderDaily(b, d){
- const day = new Date().toISOString().slice(0,10);
+ const day = localDay();
  const challenge = d.daily;
  if(challenge?.date === day && challenge.done){
   b.innerHTML = `<div class="feature-result"><b>🔥 Desafio concluído!</b>
@@ -814,17 +958,18 @@ function renderDaily(b, d){
   <p>Gere uma sensibilidade, teste no treinamento e faça um ajuste consciente de até 5 pontos em uma mira.</p>
   <div class="feature-stat">
    <div><small>Recompensa</small><b>+50 XP</b></div>
-   <div><small>Sequência atual</small><b>${d.streak||0} dias</b></div>
+   <div><small>Sequência atual</small><b>${streakNow(d)} dias</b></div>
   </div>
   <button class="btn" onclick="completeDaily()">Concluir desafio</button></div>`;
 }
 function completeDaily(){
  const d = fdata();
- const day = new Date().toISOString().slice(0,10);
+ const day = localDay();
  if(d.daily?.date === day && d.daily.done){ toast('Desafio já concluído'); return; }
+ const st = streakNow(d) + 1;
  d.daily = {date: day, done: true, xp: 50};
  d.xp = (d.xp || 0) + 50;
- d.streak = (d.streak || 0) + 1;
+ d.streak = st;
  fsave(d); featureOpen('daily'); toast('+50 XP conquistados!');
 }
 
@@ -915,9 +1060,9 @@ document.addEventListener('click', e => {
 }, true);
 
 document.addEventListener('pointerdown', () => {
- if(hzRetryPending || meas || busy) return;
+ if(hzRetryPending || meas || busy || hzTries >= 3) return;
  if(hzAuto && hzAuto <= 60){
-  hzRetryPending = true;
+  hzRetryPending = true; hzTries++;
   setTimeout(() => { hzRetryPending = false; if(!meas && !busy) detect('up'); }, 150);
  }
 });
@@ -937,5 +1082,6 @@ Promise.race([detect('set'), sleep(2600)]).then(finishIntro, finishIntro);
 renderPixQR();
 updateVersionFromServer();
 </script>
+<div class="pop" id="pop" role="dialog" aria-modal="true" aria-hidden="true" onclick="if(event.target===this)closePopup()"><div class="pop-card"><b id="popText"></b><img alt="Cachorro de óculos com a legenda realmente" src="data:image/jpeg;base64,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"><button class="btn" onclick="closePopup()">Fechar</button></div></div>
 </body>
 </html>
