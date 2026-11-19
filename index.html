@@ -174,7 +174,7 @@ nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stro
 </div>
 
 <div id="app">
-<header><div class="brand-lockup"><div class="logo">ZNIS<b>BACK</b></div><span class="app-version" id="appVersion">Versão 1.5.6</span></div><button class="badge" id="tier" hidden onclick="go('dev')" title="Ajuda o dev"></button></header>
+<header><div class="brand-lockup"><div class="logo">ZNIS<b>BACK</b></div><span class="app-version" id="appVersion">Versão 1.5.6</span></div><button class="badge" id="tier" hidden onclick="go('dev')" title="Ajuda o dev">Ajuda o dev 💛</button></header>
 <main>
 <section class="screen on" id="s-home">
 <h2>Seu aparelho</h2>
@@ -229,17 +229,6 @@ nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stro
 <script>
 // ============================================================
 // ZNISBACK — CHANGELOG / CENTRAL DE NOVIDADES
-// ------------------------------------------------------------
-// PARA CADA NOVO UPDATE, adicione um objeto no TOPO do array NEWS:
-//
-//  { version:'1.5.7', sections:[
-//    {type:'new', label:'Novidades',  items:['...','...']},
-//    {type:'fix', label:'Correções',  items:['...','...']},
-//    {type:'sec', label:'Segurança',  items:['...','...']}
-//  ]},
-//
-// Tipos aceitos: 'new' (✨), 'fix' (🔧), 'sec' (🛡️)
-// Seções vazias podem ser omitidas. NÃO remova versões antigas.
 // ============================================================
 const NEWS = [
  { version:'1.5.6', sections:[
@@ -250,12 +239,14 @@ const NEWS = [
      'Central de novidades com histórico por categoria'
    ]},
    {type:'fix', label:'Correções', items:[
-     'Nome do titular do Pix corrigido no QR (ROBERTO FRANCA DE JESUS)',
+     'Nome do titular do Pix corrigido no QR ',
      'Aplicar preset não é mais sobrescrito ao exibir',
      'Consulta de IP com timeout de 8s',
      'Detecção de Hz rearmada após primeira tentativa falhar',
      'Versão centralizada em uma única constante',
-     'Botão de copiar diagnóstico não quebra mais com aspas no UA'
+     'Botão de copiar diagnóstico não quebra mais com aspas no UA',
+     'Correção do cálculo de potência do aparelho (NaN)',
+     'Botão "Ajuda o dev" separado da classificação do aparelho'
    ]},
    {type:'sec', label:'Segurança', items:[
      'Respostas do dono centralizadas em OWNER_ANSWERS',
@@ -286,15 +277,9 @@ const NEWS_COLOR = {new:'#7bd88f', fix:'#ffc233', sec:'#ff7a1a'};
 
 // ===== Constantes globais =====
 const APP_VERSION_FALLBACK = '1.5.6';
-// Chave Pix: telefone celular (DDD 79 + 99655-1031) em formato E.164.
-// ⚠️ Se sua chave for CPF/CNPJ/email/aleatória, ajuste aqui:
 const PIX_KEY   = '+5579996551031';
-// Nome do TITULAR da conta (como está no banco). Sem acentos/cedilha (padrão EMV). Máx. 25 chars.
 const PIX_NAME  = 'ROBERTO FRANCA DE JESUS';
-const PIX_CITY  = 'BRASIL';     // máx. 15 chars, sem acentos
-
-// Respostas do dono. ⚠️ Isso NÃO é segurança real — qualquer um que ler
-// o código-fonte consegue ver. Serve só para diferenciar a experiência.
+const PIX_CITY  = 'BRASIL';
 const OWNER_ANSWERS = { q1: ['meu vo','meu avo'], q2: 'bela' };
 
 const NAMES = {geral:'Geral',red:'Ponto Vermelho',x2:'Mira 2x',x4:'Mira 4x',awm:'AWM / Sniper',free:'Olhar Livre'};
@@ -562,13 +547,6 @@ function fill(i){
  };
  for(const k in v) $('#v-' + k).textContent = v[k];
 }
-/*
- * Sensibilidade NÃO depende de CPU/GPU/benchmark. Mas depende de
- * características físicas reais da tela:
- *  - dp (tamanho lógico): tela menor = menos alcance = sensi maior
- *  - hz (taxa real): tela mais rápida = rastreamento mais suave = sensi um pouco maior
- * Assim o resultado varia de aparelho para aparelho, mas é consistente no mesmo aparelho.
- */
 function calc(i){
  const dpBase = 400;
  const dp = i.dp || dpBase;
@@ -615,14 +593,27 @@ async function scan(){
 }
 
 function show(q, forced){
+ // 1. Correção do NaN: Garante que info.perf seja um número válido
+ let perfValue = (info && typeof info.perf === 'number' && !isNaN(info.perf)) ? info.perf : 0.5;
+ 
  const s = last = forced || calc(info);
  const bt = lastB = calcBtn(info);
- const p = Math.round(info.perf * 100);
- const T = TIERS.find(t => info.perf < t[0]) || TIERS[TIERS.length-1];
- $('#tier').hidden = false; $('#tier').textContent = T[1];
+ const p = Math.round(perfValue * 100);
+ const T = TIERS.find(t => perfValue < t[0]) || TIERS[TIERS.length-1];
+ 
+ // 2. Correção dos botões: Separa a classificação do botão de doação
+ $('#tier').hidden = false; 
+ $('#tier').textContent = 'Ajuda o dev 💛'; // Texto correto para o botão
+ $('#tier').title = 'Ajuda o dev';
+ $('#tier').onclick = () => go('dev');
+
  $('#empty').hidden = true;
  $('#res').innerHTML =
-  `<div class="pw"><span class="mut">Potência do aparelho</span><div class="pv"><b>${p}</b><small class="mut">/100</small></div><div class="t"><i style="--w:${p}%"></i></div></div>` +
+  `<div class="pw" title="Classificação: ${T[1]}">
+    <span class="mut">Potência do aparelho <small>(${T[1]})</small></span>
+    <div class="pv"><b>${p}</b><small class="mut">/100</small></div>
+    <div class="t"><i style="--w:${p}%"></i></div>
+   </div>` +
   Object.keys(NAMES).map(k => `<div class="r"><span>${NAMES[k]}</span><div class="t"><i style="--w:${s[k]/K}%"></i></div><b>${s[k]}</b></div>`).join('') +
   `<h3>Botão de atirar <small class="mut">(% no HUD)</small></h3>` +
   Object.keys(BTN).map(k => `<div class="r"><span>${BTN[k][0]}</span><div class="t"><i style="--w:${bt[k]}%"></i></div><b>${bt[k]}</b></div>`).join('') +
@@ -764,7 +755,7 @@ function applyPreset(i){
  const p = fdata().presets?.[i];
  if(!p) return;
  info = info || base();
- if(info.perf == null) info.perf = 0.5;
+ if(info.perf == null || isNaN(info.perf)) info.perf = 0.5;
  show(true, p.values);
  go('sensi');
  toast('Preset aplicado');
