@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0e1220">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="ZnisBack">
-<meta name="app-version" content="1.5.3">
+<meta name="app-version" content="1.5.4">
 <title>ZnisBack - Gerador de Sensi FF</title>
 <style>
 :root{--bg:#0e1220;--card:#171c2f;--line:#262d47;--txt:#f3f4fa;--mut:#8f97b8;--a:#ff7a1a;--b:#ffc233}
@@ -140,7 +140,7 @@ nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stro
   </section>
 </div>
 <div id="app">
-<header><div class="brand-lockup"><div class="logo">ZNIS<b>BACK</b></div><span class="app-version" id="appVersion">Versão 1.5.3</span></div><button class="badge" id="tier" hidden onclick="go('dev')" title="Ajuda o dev"></button></header>
+<header><div class="brand-lockup"><div class="logo">ZNIS<b>BACK</b></div><span class="app-version" id="appVersion">Versão 1.5.4</span></div><button class="badge" id="tier" hidden onclick="go('dev')" title="Ajuda o dev"></button></header>
 <main>
 <section class="screen on" id="s-home">
 <h2>Seu aparelho</h2>
@@ -367,5 +367,26 @@ Promise.race([detect('set'),sleep(2600)]).then(finishIntro,finishIntro);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(()=>{if(!document.hidden&&!meas&&!busy)detect(hzAuto?'up':'set')},400)});
 addEventListener('pointerdown',()=>{if(hzAuto&&hzAuto<=60)setTimeout(()=>{if(!meas&&!busy)detect('up')},120)},{once:true});
 </script>
+
+<script>
+(async function atualizarVersao(){
+  const elemento = document.getElementById('appVersion');
+  const fallback = 'Versão 1.5.4';
+  try {
+    const resposta = await fetch('https://znisback.github.io/znisback/version.json?t=' + Date.now(), {cache:'no-store'});
+    if (!resposta.ok) throw new Error('Não foi possível consultar a versão');
+    const dados = await resposta.json();
+    if (typeof dados.version === 'string' && dados.version.trim()) {
+      elemento.textContent = 'Versão ' + dados.version.trim();
+      document.querySelector('meta[name="app-version"]').content = dados.version.trim();
+    } else {
+      elemento.textContent = fallback;
+    }
+  } catch (erro) {
+    elemento.textContent = fallback;
+  }
+})();
+</script>
+
 </body>
 </html>
